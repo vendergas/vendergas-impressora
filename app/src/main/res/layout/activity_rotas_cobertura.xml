@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:fillViewport="true">
+
+    <TextView android:id="@+id/itinerario_title"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textColor="@color/white"
+              android:background="@color/colorPrimary"
+              android:textAllCaps="true"
+              android:paddingTop="10dp"
+              android:paddingStart="20dp"
+              android:paddingEnd="20dp"
+              android:paddingBottom="10dp"
+              android:fontFamily="sans-serif-medium"
+              android:textSize="20dp"
+              android:text="Despacho"/>
+
+    <LinearLayout android:layout_below="@id/itinerario_title"
+                  android:id="@+id/itinerario_info"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@color/white"
+                  android:baselineAligned="false"
+                  android:elevation="2dp"
+                  android:outlineProvider="bounds"
+                  android:orientation="horizontal">
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:layout_gravity="center_vertical"
+                      android:padding="10dp"
+                      android:orientation="vertical">
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:layout_marginBottom="2dp"
+                          android:orientation="horizontal">
+
+                <LinearLayout android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical">
+
+                    <TextView android:id="@+id/chave"
+                              android:text="--"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:fontFamily="sans-serif-black"
+                              android:gravity="start"
+                              android:layout_gravity="start"
+                              android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    <TextView android:id="@+id/valor"
+                              android:text="--"
+                              android:layout_marginTop="2dp"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:fontFamily="sans-serif-black"
+                              android:gravity="start"
+                              android:textSize="24sp"
+                              android:layout_gravity="start"
+                              android:textAppearance="?attr/textAppearanceListItem"/>
+
+                </LinearLayout>
+
+                <TextView android:id="@+id/emissao"
+                          android:gravity="end"
+                          android:text="--"
+                          android:layout_gravity="end"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:layout_marginStart="20dp"
+                          android:textSize="14sp"
+                          android:fontFamily="sans-serif-black"
+                          android:textAppearance="?attr/textAppearanceListItem"/>
+
+            </LinearLayout>
+
+            <TextView android:id="@+id/estabelecimento"
+                      android:text="--"
+                      android:textAllCaps="true"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:fontFamily="sans-serif-bold"
+                      android:textSize="18sp"
+                      android:textAppearance="?attr/textAppearanceListItem"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView android:layout_below="@id/itinerario_info"
+              android:id="@+id/rota_title"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textColor="@color/white"
+              android:background="@color/colorPrimary"
+              android:textAllCaps="true"
+              android:paddingTop="10dp"
+              android:paddingStart="20dp"
+              android:paddingEnd="20dp"
+              android:paddingBottom="10dp"
+              android:fontFamily="sans-serif-medium"
+              android:textSize="20dp"
+              android:text="Rota"/>
+
+    <Button android:id="@+id/nova_venda"
+            android:layout_below="@id/rota_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:drawableEnd="@drawable/ic_add_white_24dp"
+            android:drawableStart="@drawable/ic_add_white_24dp"
+            android:drawableTint="@color/white"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:text="Adicionar venda"/>
+
+    <ListView android:id="@+id/itinerario_list"
+              android:layout_below="@id/rota_title"
+              tools:listitem="@layout/itinerario_item"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:divider="@color/darkGrey"
+              android:dividerHeight="0.5dp"
+              android:footerDividersEnabled="false"
+              android:headerDividersEnabled="false"/>
+
+    <ProgressBar android:id="@+id/loading"
+                 android:layout_width="40dp"
+                 android:layout_height="40dp"
+                 android:layout_marginTop="20dp"
+                 android:layout_gravity="center"
+                 android:layout_centerInParent="true"
+                 android:indeterminateTint="@color/colorPrimary"
+                 android:layout_alignParentTop="true"/>
+
+    <ScrollView android:id="@+id/nova_venda_popup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:elevation="3dp"
+                android:outlineProvider="background"
+                android:layout_gravity="top|start"
+                android:padding="1dp"
+                android:background="@color/transparent_alpha"
+                android:visibility="invisible"
+                android:gravity="center">
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/lightGrey"
+                        android:orientation="vertical"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:paddingBottom="20dp"
+                        android:elevation="2dp"
+                        android:outlineProvider="background">
+
+            <TextView android:id="@+id/title-venda-dest"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/white"
+                      android:background="@color/colorPrimary"
+                      android:textAllCaps="true"
+                      android:gravity="center"
+                      android:paddingTop="10dp"
+                      android:paddingStart="20dp"
+                      android:paddingEnd="20dp"
+                      android:paddingBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="20dp"
+                      android:text="DESTINATÁRIO"/>
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView android:layout_below="@id/title-venda-dest"
+                                                                     android:id="@+id/autocomplete_destinatario"
+                                                                     android:layout_width="match_parent"
+                                                                     android:layout_height="wrap_content"
+                                                                     android:layout_marginStart="10dp"
+                                                                     android:drawableEnd="@drawable/ic_search_black_24dp"
+                                                                     android:hint="Buscar destinatário"
+                                                                     android:layout_marginEnd="10dp"/>
+
+            <TextView android:layout_below="@id/autocomplete_destinatario"
+                      android:id="@+id/input-cliente-info"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/darkGrey"
+                      android:layout_marginStart="15dp"
+                      android:layout_marginEnd="15dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="12sp"
+                      android:layout_marginBottom="5dp"
+                      android:text="Buscar pelo nome, telefone ou código."/>
+
+            <ProgressBar android:id="@+id/loading_cliente_list"
+                         android:layout_below="@id/input-cliente-info"
+                         android:layout_width="match_parent"
+                         android:layout_height="40dp"
+                         android:layout_gravity="center"
+                         android:layout_centerHorizontal="true"
+                         android:visibility="gone"
+                         android:indeterminateTint="@color/colorPrimary"/>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_below="@id/loading_cliente_list"
+                          android:id="@+id/dest-selecionado"
+                          android:background="@color/white"
+                          android:layout_marginTop="10dp"
+                          android:paddingTop="10dp"
+                          android:paddingBottom="10dp"
+                          android:elevation="4dp"
+                          android:outlineProvider="bounds"
+                          android:orientation="vertical">
+
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/black"
+                          android:textAllCaps="true"
+                          android:layout_marginStart="15dp"
+                          android:layout_marginEnd="15dp"
+                          android:fontFamily="sans-serif-medium"
+                          android:textSize="14dp"
+                          android:text="DESTINATÁRIO Selecionado"/>
+
+                <TextView android:id="@+id/nome_destinatario_selecionado"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/black"
+                          android:textAllCaps="true"
+                          android:layout_marginStart="15dp"
+                          android:layout_marginEnd="15dp"
+                          android:fontFamily="sans-serif-light"
+                          android:textSize="20dp"
+                          android:text="DESTINATÁRIO Selecionado"/>
+            </LinearLayout>
+
+
+            <TextView android:id="@+id/title-pagamento"
+                      android:layout_below="@id/dest-selecionado"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/white"
+                      android:background="@color/colorPrimary"
+                      android:textAllCaps="true"
+                      android:gravity="center"
+                      android:paddingTop="10dp"
+                      android:paddingStart="20dp"
+                      android:paddingEnd="20dp"
+                      android:paddingBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="20dp"
+                      android:text="Forma de Pagamento"/>
+
+            <LinearLayout android:id="@+id/opcoes-pagamento"
+                          android:layout_width="match_parent"
+                          android:layout_margin="10dp"
+                          android:layout_height="wrap_content"
+                          android:layout_below="@id/title-pagamento"
+                          android:orientation="vertical">
+
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:textSize="14sp"
+                          android:fontFamily="sans-serif-black"
+                          android:textAllCaps="true"
+                          android:text="Selecione a forma de pagamento"/>
+
+                <Spinner android:id="@+id/forma_pagamento"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:background="@android:drawable/btn_dropdown"
+                         android:spinnerMode="dropdown"/>
+
+            </LinearLayout>
+
+            <TextView android:id="@+id/title-produtos"
+                      android:layout_below="@id/opcoes-pagamento"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/white"
+                      android:background="@color/colorPrimary"
+                      android:textAllCaps="true"
+                      android:gravity="center"
+                      android:paddingTop="10dp"
+                      android:paddingStart="20dp"
+                      android:paddingEnd="20dp"
+                      android:paddingBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="20dp"
+                      android:text="Produtos"/>
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView android:id="@+id/autocomplete_produto"
+                                                                     android:layout_below="@id/title-produtos"
+                                                                     android:layout_width="match_parent"
+                                                                     android:layout_height="wrap_content"
+                                                                     android:layout_marginStart="10dp"
+                                                                     android:drawableEnd="@drawable/ic_search_black_24dp"
+                                                                     android:hint="Buscar produto"
+                                                                     android:layout_marginEnd="10dp"/>
+
+            <TextView android:layout_below="@id/autocomplete_produto"
+                      android:id="@+id/input-produtos-info"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/darkGrey"
+                      android:layout_marginStart="15dp"
+                      android:layout_marginEnd="15dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="12sp"
+                      android:layout_marginBottom="5dp"
+                      android:text="Buscar pelo código, nome, etc."/>
+
+            <ProgressBar android:id="@+id/loading_produtos_list"
+                         android:layout_below="@id/input-produtos-info"
+                         android:layout_width="match_parent"
+                         android:layout_height="40dp"
+                         android:layout_centerHorizontal="true"
+                         android:visibility="gone"
+                         android:indeterminateTint="@color/colorPrimary"/>
+
+            <ListView android:id="@+id/produto_list"
+                      android:layout_below="@id/loading_produtos_list"
+                      tools:listitem="@layout/input_produto_item"
+                      android:layout_width="match_parent"
+                      android:layout_height="130dp"
+                      android:background="@color/white"
+                      android:elevation="4dp"
+                      android:outlineProvider="bounds"
+                      android:layout_marginTop="10dp"
+                      android:layout_marginBottom="70dp"
+                      android:divider="@color/darkGrey"
+                      android:dividerHeight="0.5dp"
+                      android:footerDividersEnabled="false"
+                      android:headerDividersEnabled="false"/>
+
+            <LinearLayout android:id="@+id/venda_buttons_container"
+                          android:layout_alignParentBottom="true"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+
+                <Button android:id="@+id/nova_venda_voltar" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="Voltar"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:paddingEnd="20dp"
+                        android:paddingStart="10dp"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_keyboard_arrow_left_white_24dp"
+                        android:drawableTint="@color/white"
+                        android:background="@android:color/holo_red_dark"/>
+
+                <Button android:id="@+id/iniciar_venda"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_weight="1"
+                        android:text="Iniciar venda"
+                        android:layout_margin="10dp"
+                        android:background="@color/colorPrimary"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

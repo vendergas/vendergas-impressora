@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".activity.VendaActivity">
+
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true">
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center_horizontal"
+                      android:orientation="vertical">
+
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textAllCaps="true"
+                      android:layout_marginTop="20dp"
+                      android:layout_marginStart="20dp"
+                      android:layout_marginEnd="20dp"
+                      android:layout_marginBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="20dp"
+                      android:text="Informações Gerais"/>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:background="@color/white"
+                          android:baselineAligned="false"
+                          android:elevation="2dp"
+                          android:outlineProvider="bounds"
+                          android:orientation="horizontal">
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:layout_gravity="center_vertical"
+                              android:padding="10dp"
+                              android:orientation="vertical">
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Status:"
+                                  android:textAllCaps="true"
+                                  android:layout_weight="1"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:textSize="14sp"
+                                  android:gravity="start"
+                                  android:layout_gravity="start"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/status"
+                                  android:text="--"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textColor="@android:color/holo_red_dark"
+                                  android:textAllCaps="true"
+                                  android:gravity="end"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="end"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout android:id="@+id/motivo_erro_nf"
+                                  android:layout_width="match_parent"
+                                  android:visibility="gone"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Motivo do Erro:"
+                                  android:textAllCaps="true"
+                                  android:layout_weight="1"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:textSize="14sp"
+                                  android:gravity="start"
+                                  android:layout_gravity="start"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/erro_nf"
+                                  android:text="--"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textColor="@android:color/holo_red_dark"
+                                  android:textAllCaps="true"
+                                  android:gravity="end"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="end"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Forma de pagamento:"
+                                  android:textAllCaps="true"
+                                  android:layout_weight="1"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:gravity="start"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="start"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/pagamento"
+                                  android:text="--"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textAllCaps="true"
+                                  android:gravity="end"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="end"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Total:"
+                                  android:textAllCaps="true"
+                                  android:layout_weight="1"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="start|bottom"
+                                  android:gravity="start|bottom"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/valor"
+                                  android:text="R$ --"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textAllCaps="true"
+                                  android:gravity="end|bottom"
+                                  android:layout_gravity="end|bottom"
+                                  android:textSize="20sp"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                    <TextView android:id="@+id/estabelecimento"
+                              android:text="--"
+                              android:textAllCaps="true"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:fontFamily="sans-serif-bold"
+                              android:textSize="18sp"
+                              android:textAppearance="?attr/textAppearanceListItem"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textAllCaps="true"
+                      android:layout_marginTop="20dp"
+                      android:layout_marginStart="20dp"
+                      android:layout_marginEnd="20dp"
+                      android:layout_marginBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="20dp"
+                      android:text="Destinatário"/>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:background="@color/white"
+                          android:baselineAligned="false"
+                          android:elevation="2dp"
+                          android:outlineProvider="bounds"
+                          android:padding="10dp"
+                          android:orientation="vertical">
+
+                <TextView android:id="@+id/cliente_nome"
+                          android:text="Cliente nome teste"
+                          android:layout_marginTop="2dp"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:fontFamily="sans-serif-bold"
+                          android:textAllCaps="true"
+                          android:textSize="18sp"
+                          android:textAppearance="?attr/textAppearanceListItem"/>
+
+                <TextView android:id="@+id/cliente_endereco"
+                          android:text="Endereço cliente, Brasilia - DF, 13203-403"
+                          android:layout_marginTop="2dp"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:fontFamily="sans-serif-bold"
+                          android:textAllCaps="true"
+                          android:textSize="12sp"
+                          android:textAppearance="?attr/textAppearanceListItem"/>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_marginTop="20dp"
+                              android:orientation="vertical">
+
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:textSize="14sp"
+                              android:fontFamily="sans-serif-black"
+                              android:textAllCaps="true"
+                              android:text="CPF"/>
+
+                    <EditText android:id="@+id/cpf_input"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:inputType="number"
+                              android:hint="Digite o CPF do destinatário"/>
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_marginTop="20dp"
+                              android:orientation="vertical">
+
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:textSize="14sp"
+                              android:fontFamily="sans-serif-black"
+                              android:textAllCaps="true"
+                              android:text="CNPJ"/>
+
+                    <EditText android:id="@+id/cnpj_input"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:inputType="number"
+                              android:hint="Digite o CNPJ do destinatário"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textAllCaps="true"
+                      android:layout_marginTop="20dp"
+                      android:layout_marginStart="20dp"
+                      android:layout_marginEnd="20dp"
+                      android:layout_marginBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="20dp"
+                      android:text="Produtos"/>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:background="@color/white"
+                          android:baselineAligned="false"
+                          android:elevation="2dp"
+                          android:outlineProvider="bounds"
+                          android:padding="10dp"
+                          android:orientation="vertical">
+
+                <TextView android:id="@+id/produtos_info"
+                          android:text="--"
+                          android:textAllCaps="true"
+                          android:fontFamily="sans-serif-black"
+                          android:textSize="12sp"
+                          android:layout_marginTop="2dp"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textAppearance="?attr/textAppearanceListItem"/>
+
+            </LinearLayout>
+
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textAllCaps="true"
+                      android:layout_marginTop="20dp"
+                      android:layout_marginStart="20dp"
+                      android:layout_marginEnd="20dp"
+                      android:layout_marginBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:textSize="20dp"
+                      android:text="NOTA FISCAL"/>
+
+            <LinearLayout android:id="@+id/nf_section_input"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:background="@color/white"
+                          android:baselineAligned="false"
+                          android:elevation="2dp"
+                          android:outlineProvider="bounds"
+                          android:padding="10dp"
+                          android:orientation="vertical">
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical">
+
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:textSize="14sp"
+                              android:fontFamily="sans-serif-black"
+                              android:textAllCaps="true"
+                              android:text="Tipo Documento"/>
+
+                    <Spinner android:id="@+id/tipo_documento"
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:background="@android:drawable/btn_dropdown"
+                             android:spinnerMode="dropdown"/>
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_marginTop="10dp"
+                              android:orientation="vertical">
+
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:textSize="14sp"
+                              android:fontFamily="sans-serif-black"
+                              android:textAllCaps="true"
+                              android:text="Observações"/>
+
+                    <EditText android:id="@+id/observacoes_input"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:inputType="text"
+                              android:hint="Digite as observações"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/nf_section_info"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:background="@color/white"
+                          android:baselineAligned="false"
+                          android:elevation="2dp"
+                          android:outlineProvider="bounds"
+                          android:orientation="horizontal">
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:layout_gravity="center_vertical"
+                              android:padding="10dp"
+                              android:orientation="vertical">
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Tipo nf:"
+                                  android:textAllCaps="true"
+                                  android:layout_weight="1"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:gravity="start"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="start"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/tipoNf"
+                                  android:text="--"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textAllCaps="true"
+                                  android:gravity="end"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="end"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Natureza da Operação:"
+                                  android:textAllCaps="true"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:layout_marginEnd="10dp"
+                                  android:gravity="start"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="start"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/opFis"
+                                  android:text="--"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textAllCaps="true"
+                                  android:gravity="end|top"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="end|top"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Data emissão:"
+                                  android:textAllCaps="true"
+                                  android:layout_weight="1"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:gravity="start"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="start"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/dataEmissao"
+                                  android:text="--"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textAllCaps="true"
+                                  android:gravity="end"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="end"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="2dp"
+                                  android:orientation="horizontal">
+
+                        <TextView android:text="Valor:"
+                                  android:textAllCaps="true"
+                                  android:layout_weight="1"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:fontFamily="sans-serif-bold"
+                                  android:gravity="start"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="start"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                        <TextView android:id="@+id/valorNota"
+                                  android:text="--"
+                                  android:layout_marginTop="2dp"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:fontFamily="sans-serif-black"
+                                  android:textAllCaps="true"
+                                  android:gravity="end"
+                                  android:textSize="14sp"
+                                  android:layout_gravity="end"
+                                  android:textAppearance="?attr/textAppearanceListItem"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textAllCaps="true"
+                      android:layout_marginTop="20dp"
+                      android:layout_marginStart="20dp"
+                      android:layout_marginEnd="20dp"
+                      android:layout_marginBottom="10dp"
+                      android:fontFamily="sans-serif-medium"
+                      android:id="@+id/title_boleto"
+                      android:textSize="20dp"
+                      android:text="BOLETO"/>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:background="@color/white"
+                          android:id="@+id/boleto_inputs"
+                          android:baselineAligned="false"
+                          android:elevation="2dp"
+                          android:outlineProvider="bounds"
+                          android:padding="10dp"
+                          android:orientation="vertical">
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical">
+
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:textSize="14sp"
+                              android:fontFamily="sans-serif-black"
+                              android:textAllCaps="true"
+                              android:text="VENCIMENTO"/>
+
+                    <EditText android:id="@+id/vencimento_input"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:inputType="date"
+                              android:clickable="true"
+                              android:longClickable="false"
+                              android:focusable="false"
+                              android:hint="Informe o vencimento do BOLETO"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button android:id="@+id/emitir_nota" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:drawableEnd="@drawable/ic_print_black_24dp"
+                    android:drawableStart="@drawable/ic_print_black_24dp"
+                    android:drawableTint="@color/white"
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:text="EMITIR NOTA"/>
+
+            <Button android:id="@+id/emitir_boleto" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:drawableEnd="@drawable/ic_chrome_reader_mode_black_24dp"
+                    android:drawableStart="@drawable/ic_chrome_reader_mode_black_24dp"
+                    android:drawableTint="@color/white"
+                    android:padding="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="EMITIR BOLETO"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

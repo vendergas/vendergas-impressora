@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "324070648367",
+    "firebase_url": "https://vendergas-impressora.firebaseio.com",
+    "project_id": "vendergas-impressora",
+    "storage_bucket": "vendergas-impressora.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324070648367:android:ec334edf4afbcdccacf4da",
+        "android_client_info": {
+          "package_name": "vendergas.impressora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324070648367-dfp3cme7lcpultl2n89r1tp8i8nqjft7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE5sprHMG9YPQ2hGstft04NYWGaiMmJ8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324070648367-dfp3cme7lcpultl2n89r1tp8i8nqjft7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

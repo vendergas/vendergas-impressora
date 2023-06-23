@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/activity_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                tools:context=".activity.LoginActivity">
+
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true">
+
+        <LinearLayout android:layout_marginTop="-50dp"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center_vertical|center_horizontal"
+                      android:orientation="vertical">
+
+            <!--
+            <android.support.v7.widget.CardView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp">
+
+                <ImageView
+                    android:id="@+id/roundedImageView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/logo_vendergas"
+                    android:background="@android:color/transparent"
+                    android:adjustViewBounds="true"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop" />
+
+            </android.support.v7.widget.CardView>
+            -->
+
+            <ImageView android:id="@+id/roundedImageView"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="center"
+                       android:src="@drawable/vendergas_icon"
+                       android:background="@android:color/transparent"
+                       android:adjustViewBounds="true"
+                       android:paddingStart="10dp"
+                       android:layout_centerInParent="true"
+                       android:scaleType="centerCrop"/>
+
+
+            <ProgressBar android:id="@+id/loading"
+                         android:layout_width="40dp"
+                         android:layout_height="40dp"
+                         android:layout_marginTop="20dp"
+                         android:layout_gravity="center"
+                         android:indeterminateTint="@color/white"
+                         android:layout_centerInParent="true"/>
+
+            <!--
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/logo_vendergas"
+                android:id="@+id/imageView" />
+            -->
+
+            <EditText android:drawableStart="@drawable/ic_email_black_24dp"
+                      android:drawableTint="@color/transparent_white"
+                      android:drawablePadding="10dp"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginStart="50dp"
+                      android:layout_marginEnd="50dp"
+                      android:layout_marginTop="90dp"
+                      android:inputType="textEmailAddress"
+                      android:textColor="@color/white"
+                      android:ems="10"
+                      android:background="@drawable/input_login_layout"
+                      android:paddingTop="10dp"
+                      android:paddingBottom="10dp"
+                      android:paddingStart="15dp"
+                      android:paddingEnd="15dp"
+                      android:autofillHints=""
+                      android:id="@+id/edit_email"
+                      android:textColorHighlight="@color/white"
+                      android:textColorHint="@color/transparent_white"
+                      android:textCursorDrawable="@null"
+                      android:hint="E-mail"/>
+
+            <EditText android:drawableStart="@drawable/ic_lock_black_24dp"
+                      android:drawableTint="@color/transparent_white"
+                      android:drawablePadding="10dp"
+                      android:visibility="gone"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginStart="50dp"
+                      android:layout_marginEnd="50dp"
+                      android:id="@+id/edit_password"
+                      android:autofillHints=""
+                      android:inputType="textPassword"
+                      android:textColor="@color/white"
+                      android:ems="10"
+                      android:background="@drawable/input_login_layout"
+                      android:layout_gravity="center"
+                      android:layout_marginTop="19dp"
+                      android:paddingTop="10dp"
+                      android:paddingBottom="10dp"
+                      android:paddingStart="15dp"
+                      android:paddingEnd="15dp"
+                      android:textColorHint="@color/transparent_white"
+                      android:hint="Senha"/>
+
+            <TextView android:text="Esqueceu a senha?"
+                      android:visibility="gone"
+                      android:textColor="@color/white"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center"
+                      android:layout_marginTop="19dp"
+                      android:id="@+id/text_forgot_password"/>
+
+            <Button android:text="Entrar"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_green_medium"
+                    android:elevation="3dp"
+                    android:outlineProvider="background"
+                    android:id="@+id/button_sing_in">
+            </Button>
+
+            <Button android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_green_medium"
+                    android:elevation="3dp"
+                    android:outlineProvider="background"
+                    android:layout_marginTop="27dp"
+                    android:text="Novo Cadastro"
+                    android:visibility="gone"
+                    android:id="@+id/button_new_register"
+                    android:layout_marginBottom="20dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

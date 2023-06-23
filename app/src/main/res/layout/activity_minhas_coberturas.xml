@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_height="match_parent"
+                tools:context=".activity.MinhasCoberturasActivity">
+
+    <TextView android:id="@+id/info_request"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:gravity="center"
+              android:padding="10dp"
+              android:textSize="15dp"
+              android:textAllCaps="true"
+              android:text="As informações exibidas são das últimas 24 horas!"
+              android:textColor="@android:color/holo_red_dark"/>
+
+    <androidx.appcompat.widget.AppCompatAutoCompleteTextView android:layout_below="@id/info_request"
+                                                             android:id="@+id/autocomplete_cobertura"
+                                                             android:layout_width="match_parent"
+                                                             android:layout_height="wrap_content"
+                                                             android:layout_marginTop="20dp"
+                                                             android:layout_marginBottom="40dp"
+                                                             android:layout_marginStart="20dp"
+                                                             android:layout_marginEnd="20dp"
+                                                             android:drawableEnd="@drawable/ic_search_black_24dp"
+                                                             android:hint="Número da remessa"/>
+
+
+
+    <ProgressBar android:id="@+id/loading"
+                 android:layout_width="40dp"
+                 android:layout_height="40dp"
+                 android:layout_marginTop="80dp"
+                 android:layout_gravity="center"
+                 android:layout_centerInParent="true"
+                 android:indeterminateTint="@color/colorPrimary"
+                 android:layout_alignParentTop="true"/>
+
+    <ListView android:id="@+id/coberturas_list"
+              android:layout_below="@id/autocomplete_cobertura"
+              tools:listitem="@layout/cobertura_item"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:divider="@color/darkGrey"
+              android:dividerHeight="0.5dp"
+              android:footerDividersEnabled="false"
+              android:headerDividersEnabled="false"/>
+
+</RelativeLayout>
