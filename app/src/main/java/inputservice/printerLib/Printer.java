@@ -16,10 +16,11 @@ class Printer {
 	public static boolean connected = false;
 	public static boolean keepConnection = false;
 	private String mPrinterName = null;
-	public static final String MPT3 = "MPT-III";
-	public static final String MPT2 = "MPT-II";
-	public static final String INPUTSERVICE = "INPUTSERVICE";
-	public static final String A7LIGHT = "Leopardo A7 Light";
+        public static final String MPT3 = "MPT-III";
+        public static final String MPT2 = "MPT-II";
+        public static final String INPUTSERVICE = "INPUTSERVICE";
+        public static final String A7LIGHT = "Leopardo A7 Light";
+        public static final String GSMTP8 = "GS-MTP8";
 	public static final String MAC = "00:02:5B";
 	public static boolean isA7Light = false;
 
@@ -83,7 +84,7 @@ class Printer {
 		return false;
 	}
 
-	/* default MPT-III || MPT-II || INPUTSERVICE */
+        /* default MPT-III || MPT-II || INPUTSERVICE || GS-MTP8 */
 
 	// -1 = unknown
 	private int knownPrinter(ArrayList<String> strList) {
@@ -94,12 +95,13 @@ class Printer {
 			if (0 == i % 2) {
 				isA7Light = strList.get(i).equals(Printer.A7LIGHT);
 
-				if (
-						strList.get(i).equals(Printer.MPT2)
-						|| strList.get(i).equals(Printer.MPT3)
-						|| strList.get(i).equals(Printer.INPUTSERVICE)
-						|| strList.get(i).equals(Printer.A7LIGHT)
-				) {
+                                if (
+                                                strList.get(i).equals(Printer.MPT2)
+                                                || strList.get(i).equals(Printer.MPT3)
+                                                || strList.get(i).equals(Printer.INPUTSERVICE)
+                                                || strList.get(i).equals(Printer.A7LIGHT)
+                                                || strList.get(i).equals(Printer.GSMTP8)
+                                ) {
 
 					//if (strList.get(i + 1).substring(0, 8).equals(MAC)) {
 
@@ -119,20 +121,22 @@ class Printer {
 	private boolean knownPrinter(String printerName, String macaddress) {
 		boolean known = false;
 
-		if (printerName.equals(Printer.MPT2)
-				|| printerName.equals(Printer.MPT3)
-				|| printerName.equals(Printer.INPUTSERVICE)) {
+                if (printerName.equals(Printer.MPT2)
+                                || printerName.equals(Printer.MPT3)
+                                || printerName.equals(Printer.INPUTSERVICE)
+                                || printerName.equals(Printer.GSMTP8)) {
 
-			if (macaddress.substring(0, 8).equals(MAC)) {
+                        if (printerName.equals(Printer.GSMTP8)
+                                        || macaddress.substring(0, 8).equals(MAC)) {
 
-				return true;
+                                return true;
 
-			}
-		}
+                        }
+                }
 
-		return known;
+                return known;
 
-	}
+        }
 
 	private int knownPrinter(ArrayList<String> strList, String printerName) {
 		int known = -1;
@@ -141,14 +145,15 @@ class Printer {
 
 			if (0 == i % 2) {
 
-				if (strList.get(i).equals(printerName)) {
+                                if (strList.get(i).equals(printerName)) {
 
-					if (strList.get(i + 1).substring(0, 8).equals(MAC)) {
+                                        if (printerName.equals(Printer.GSMTP8)
+                                                        || strList.get(i + 1).substring(0, 8).equals(MAC)) {
 
-						known = i;
-						return known;
-					}
-				}
+                                                known = i;
+                                                return known;
+                                        }
+                                }
 
 			}
 

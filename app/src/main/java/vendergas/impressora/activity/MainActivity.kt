@@ -234,7 +234,7 @@ class MainActivity : BaseActivity() {
 
         deviceCheck@ for (device in mBth.GetBondedDevices()) {
             when(device.name) {
-                "MPT-III" -> {
+                "MPT-III", "GS-MTP8" -> {
                     val mac = device.address
 
                     if (!mBth.Open(mac)) {
