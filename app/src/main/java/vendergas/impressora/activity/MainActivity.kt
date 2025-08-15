@@ -12,7 +12,6 @@ import com.google.gson.Gson
 import inputservice.printerLib.BoletoUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.jetbrains.anko.doAsync
 import vendergas.impressora.App
 import vendergas.impressora.R
 import vendergas.impressora.base.BaseActivity
@@ -130,9 +129,9 @@ class MainActivity : BaseActivity() {
             progress.setCancelable(false) // disable dismiss by tapping outside of the dialog
             progress.show()
 
-            doAsync {
+            Thread {
                 val printer = (application as App).getBoletoPrinter()
-                var connected = false;
+                var connected = false
                 try { connected = printer.connect(false) } catch (e: Exception) { e.printStackTrace() }
 
                 if (!connected) {
@@ -150,7 +149,7 @@ class MainActivity : BaseActivity() {
                         (application as App).disconnectBoletoPrinter()
                         progress.dismiss()
                     }
-                    return@doAsync;
+                    return@Thread
                 }
 
                 try {
@@ -192,16 +191,16 @@ class MainActivity : BaseActivity() {
                         ""
                     )
 
-                    val boletoprinter = (application as App).getBoletoPrinter();
-                    boletoprinter.getMobilePrinter().Reset();
-                    boletoprinter.printBoleto(boleto);
+                    val boletoprinter = (application as App).getBoletoPrinter()
+                    boletoprinter.getMobilePrinter().Reset()
+                    boletoprinter.printBoleto(boleto)
                     (application as App).disconnectBoletoPrinter()
                     runOnUiThread { progress.dismiss() }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     requestHandler.logCrash(e)
                 }
-            }
+            }.start()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             requestHandler.logCrash(e)
@@ -234,7 +233,7 @@ class MainActivity : BaseActivity() {
 
         deviceCheck@ for (device in mBth.GetBondedDevices()) {
             when(device.name) {
-                "MPT-III" -> {
+                "MPT-III", "GS-MTP8" -> {
                     val mac = device.address
 
                     if (!mBth.Open(mac)) {
