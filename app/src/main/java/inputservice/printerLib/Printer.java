@@ -3,15 +3,26 @@ package inputservice.printerLib;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-import rego.PrintLib.mobilePrinter;
+/*
+ * The original implementation relied on the proprietary
+ * rego.PrintLib.mobilePrinter library.  A new generic
+ * ESC/POS implementation is provided in {@link EscPosPrinter}
+ * which communicates directly with the Bluetooth socket and
+ * emits raw ESC/POS commands.
+ */
+
+//import rego.PrintLib.mobilePrinter;
+// Replaced by our own generic layer
+
+// Generic ESC/POS printer implementation provides a minimal API
+// compatible with the old mobilePrinter class to ease the transition.
 
 class Printer {
-	protected mobilePrinter mobileprint = null;
+        protected EscPosPrinter mobileprint = null;
 	public static boolean libStatus = false;
 	public static boolean connected = false;
 	public static boolean keepConnection = false;
@@ -23,19 +34,19 @@ class Printer {
 	public static final String MAC = "00:02:5B";
 	public static boolean isA7Light = false;
 
-	public Printer(mobilePrinter mp) {
-		if (mp == null) {
-			this.mobileprint = new mobilePrinter();
-		} else {
-			this.mobileprint = mp;
-		}
-		libStatus = this.mobileprint.LnitLib();
-	}
+        public Printer(EscPosPrinter mp) {
+                if (mp == null) {
+                        this.mobileprint = new EscPosPrinter();
+                } else {
+                        this.mobileprint = mp;
+                }
+                libStatus = this.mobileprint.LnitLib();
+        }
 
-	public Printer() {
-		this.mobileprint = new mobilePrinter();
-		libStatus = this.mobileprint.LnitLib();
-	}
+        public Printer() {
+                this.mobileprint = new EscPosPrinter();
+                libStatus = this.mobileprint.LnitLib();
+        }
 
 	@SuppressWarnings("unused")
 	private boolean connectPrv(String printerName, String macaddress,
@@ -83,80 +94,31 @@ class Printer {
 		return false;
 	}
 
-	/* default MPT-III || MPT-II || INPUTSERVICE */
+        /* The original implementation restricted the list of printers to
+         * a handful of known devices and checked for a specific MAC
+         * address prefix.  In order to support any generic ESC/POS
+         * printer we now simply expose the list of paired devices and
+         * let the caller decide which one to use.  The helper methods
+         * below therefore no longer enforce name or MAC filters. */
 
-	// -1 = unknown
-	private int knownPrinter(ArrayList<String> strList) {
-		int known = -1;
+        // -1 = none
+        private int knownPrinter(ArrayList<String> strList) {
+                return strList.size() >= 2 ? 0 : -1;
+        }
 
-		for (int i = 0; i < strList.size(); ++i) {
+        private boolean knownPrinter(String printerName, String macaddress) {
+                // Any printer is considered valid now
+                return true;
+        }
 
-			if (0 == i % 2) {
-				isA7Light = strList.get(i).equals(Printer.A7LIGHT);
-
-				if (
-						strList.get(i).equals(Printer.MPT2)
-						|| strList.get(i).equals(Printer.MPT3)
-						|| strList.get(i).equals(Printer.INPUTSERVICE)
-						|| strList.get(i).equals(Printer.A7LIGHT)
-				) {
-
-					//if (strList.get(i + 1).substring(0, 8).equals(MAC)) {
-
-						known = i;
-						return known;
-					//}
-				}
-
-			}
-
-		}
-
-		return known;
-
-	}
-
-	private boolean knownPrinter(String printerName, String macaddress) {
-		boolean known = false;
-
-		if (printerName.equals(Printer.MPT2)
-				|| printerName.equals(Printer.MPT3)
-				|| printerName.equals(Printer.INPUTSERVICE)) {
-
-			if (macaddress.substring(0, 8).equals(MAC)) {
-
-				return true;
-
-			}
-		}
-
-		return known;
-
-	}
-
-	private int knownPrinter(ArrayList<String> strList, String printerName) {
-		int known = -1;
-
-		for (int i = 0; i < strList.size(); ++i) {
-
-			if (0 == i % 2) {
-
-				if (strList.get(i).equals(printerName)) {
-
-					if (strList.get(i + 1).substring(0, 8).equals(MAC)) {
-
-						known = i;
-						return known;
-					}
-				}
-
-			}
-
-		}
-
-		return known;
-
-	}
+        private int knownPrinter(ArrayList<String> strList, String printerName) {
+                for (int i = 0; i < strList.size(); i += 2) {
+                        if (strList.get(i).equals(printerName)) {
+                                return i;
+                        }
+                }
+                return -1;
+        }
 
 	public boolean connect(String printerName, String macaddress, boolean keepC) {
 
@@ -177,8 +139,8 @@ class Printer {
 				connected = !disconnect();// se desconectou retorna contrário =
 											// falso(nao conectado)
 
-				this.mobileprint = new mobilePrinter();
-				this.mobileprint.LnitLib();
+                                this.mobileprint = new EscPosPrinter();
+                                this.mobileprint.LnitLib();
 
 				strList.add(0, printerName);
 				strList.add(1, macaddress);
@@ -194,96 +156,81 @@ class Printer {
 		return false;
 	}
 
-	public boolean connectA6(String printerName, String macaddress,
-			boolean keepC) {
-		ArrayList<String> strList;
-		strList = this.mobileprint.GetBondedDevices();// não funciona sem
-														// esse
-		// comando antes
+        public boolean connectA6(String printerName, String macaddress,
+                        boolean keepC) {
+                ArrayList<String> strList;
+                strList = this.mobileprint.GetBondedDevices();// não funciona sem
+                                                                                                                // esse
+                // comando antes
 
-		if (libStatus) {
-			this.mobileprint.LnitLib();
-		}
-		if (keepConnection == false) {
+                if (libStatus) {
+                        this.mobileprint.LnitLib();
+                }
+                if (keepConnection == false) {
 
-			strList = new ArrayList<String>();
+                        strList = new ArrayList<String>();
 
-			connected = !disconnect();// se desconectou retorna contrário =
-										// falso(nao conectado)
+                        connected = !disconnect();// se desconectou retorna contrário =
+                                                                                // falso(nao conectado)
 
-			strList.add(0, printerName);
-			strList.add(1, macaddress);
+                        strList.add(0, printerName);
+                        strList.add(1, macaddress);
 
-			if (this.mobileprint.ConnectDevice(strList, 0)) {
-				connected = true;
-				keepConnection = keepC;
-				return true;
-			}
+                        if (this.mobileprint.ConnectDevice(strList, 0)) {
+                                connected = true;
+                                keepConnection = keepC;
+                                return true;
+                        }
 
-		}
-		return false;
-	}
+                }
+                return false;
+        }
 
-	public boolean connect(boolean keepC) {
-		if (libStatus) {
-			this.mobileprint.LnitLib();
-		}
-		if (keepConnection == false) {
-			this.mobileprint = new mobilePrinter();
-			this.mobileprint.LnitLib();
-			this.mobileprint.GetBondedDevices();
+        public boolean connect(boolean keepC) {
+                if (libStatus) {
+                        this.mobileprint.LnitLib();
+                }
+                if (keepConnection == false) {
+                        this.mobileprint = new EscPosPrinter();
+                        this.mobileprint.LnitLib();
+                        ArrayList btList = getPairedDevices();
 
-			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-			Set<BluetoothDevice> devices = adapter.getBondedDevices();
-			ArrayList btList = new ArrayList();
+                        int printerMac = knownPrinter(btList);
+                        if (printerMac != -1) {
+                                if (mobileprint.ConnectDevice(btList, printerMac)) {
+                                        connected = true;
+                                        keepConnection = keepC;
+                                        return true;
+                                }
+                        }
 
-			if (devices.size() > 0) {
-				Iterator var4 = devices.iterator();
-				while(var4.hasNext()) {
-					BluetoothDevice device = (BluetoothDevice)var4.next();
-					btList.add(device.getName());
-					btList.add(device.getAddress());
-				}
-			} else {
-				Log.d("REGOLIB", "GetBondedDevices --> no pairedDevices");
-			}
+                }
+                return false;
+        }
 
-			int printerMac = knownPrinter(btList);
-			if (printerMac != -1) {
-				if (mobileprint.ConnectDevice(btList, printerMac)) {
-					connected = true;
-					keepConnection = keepC;
-					return true;
-				}
-			}
+        /* by name of the printer/bluetooth device */
 
-		}
-		return false;
-	}
+        public boolean connect(String printerName, boolean keepC) {
+                if (libStatus) {
+                        this.mobileprint.LnitLib();
+                }
+                if (keepConnection == false) {
+                        this.mobileprint = new EscPosPrinter();
+                        this.mobileprint.LnitLib();
+                        ArrayList<String> strList = getPairedDevices();
 
-	/* by name of the printer/bluetooth device */
+                        int printerMac = knownPrinter(strList, printerName);
+                        if (printerMac != -1) {
+                                if (mobileprint.ConnectDevice(strList, printerMac)) {
+                                        connected = true;
+                                        keepConnection = keepC;
+                                        return true;
+                                }
+                        }
 
-	public boolean connect(String printerName, boolean keepC) {
-		if (libStatus) {
-			this.mobileprint.LnitLib();
-		}
-		if (keepConnection == false) {
-			this.mobileprint = new mobilePrinter();
-			this.mobileprint.LnitLib();
-			ArrayList<String> strList = mobileprint.GetBondedDevices();
-
-			int printerMac = knownPrinter(strList, printerName);
-			if (printerMac != -1) {
-				if (mobileprint.ConnectDevice(strList, printerMac)) {
-					connected = true;
-					keepConnection = keepC;
-					return true;
-				}
-			}
-
-		}
-		return false;
-	}
+                }
+                return false;
+        }
 
 	public boolean disconnect() {
 		if (connected) {
@@ -294,12 +241,35 @@ class Printer {
 		return true;
 	}
 
-	public String getPrinterName() {
-		return mPrinterName;
-	}
+        public String getPrinterName() {
+                return mPrinterName;
+        }
 
-	public mobilePrinter getMobilePrinter() {
-		return mobileprint;
-	}
+        public EscPosPrinter getMobilePrinter() {
+                return mobileprint;
+        }
+
+        /**
+         * Returns a flat ArrayList with pairs of [name, address] for all
+         * bonded Bluetooth devices.  This allows callers to present the
+         * available printers to the user and choose one manually.
+         */
+        public ArrayList<String> getPairedDevices() {
+                BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+                ArrayList<String> btList = new ArrayList<>();
+                if (adapter != null) {
+                        Set<BluetoothDevice> devices = adapter.getBondedDevices();
+                        Iterator<BluetoothDevice> it = devices.iterator();
+                        while (it.hasNext()) {
+                                BluetoothDevice device = it.next();
+                                btList.add(device.getName());
+                                btList.add(device.getAddress());
+                        }
+                }
+                if (btList.isEmpty()) {
+                        Log.d("REGOLIB", "GetBondedDevices --> no pairedDevices");
+                }
+                return btList;
+        }
 
 }
