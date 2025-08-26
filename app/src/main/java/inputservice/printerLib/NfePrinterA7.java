@@ -1,7 +1,6 @@
 package inputservice.printerLib;
 
 import android.util.Log;
-import rego.PrintLib.mobilePrinter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,9 +131,9 @@ public class NfePrinterA7 extends Printer {
 	public static final int[] sizeslastitem = new int[] { 33, 33, 33, 15, 28,
 			30 };// for filltemplatediv
 
-	public NfePrinterA7(mobilePrinter mp) {
-		super(mp);
-	}
+        public NfePrinterA7(EscPosPrinter mp) {
+                super(mp);
+        }
 
 	public NfePrinterA7() {
 		super();
