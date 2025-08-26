@@ -15,7 +15,6 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import com.google.gson.Gson
-import org.jetbrains.anko.doAsync
 import vendergas.impressora.App
 import vendergas.impressora.models.Cliente
 import vendergas.impressora.models.Page
@@ -133,7 +132,7 @@ class MinhasCoberturasActivity : BaseActivity() {
         progress.setCancelable(false) // disable dismiss by tapping outside of the dialog
         progress.show()
 
-        doAsync {
+        Thread {
             val printer = (application as App).getPrinter()
             var connected = false;
             try { connected = printer.connect(true) } catch (e: Exception) { e.printStackTrace() }
@@ -157,7 +156,7 @@ class MinhasCoberturasActivity : BaseActivity() {
                     progress.dismiss()
                 }
             }
-        }
+        }.start()
     }
 
 }

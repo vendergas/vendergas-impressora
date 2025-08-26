@@ -17,9 +17,6 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import inputservice.printerLib.BoletoUtils
 import kotlinx.android.synthetic.main.activity_venda.*
-import org.jetbrains.anko.doAsync
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 import vendergas.impressora.App
 import vendergas.impressora.R
 import vendergas.impressora.base.BaseActivity
@@ -111,9 +108,9 @@ class VendaActivity : BaseActivity() {
 
             if (venda?.emissaoNota != null) {
                 try {
-                    val baseDate = DateTime(venda?.emissaoNota)
-                    emissao_nota_data = DateTimeFormat.forPattern("dd/MM/yyyy").print(baseDate)
-                    emissao_nota_hora = DateTimeFormat.forPattern("HH:mm").print(baseDate)
+					val baseDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).parse(venda?.emissaoNota)
+                    emissao_nota_data = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(baseDate)
+                    emissao_nota_hora = SimpleDateFormat("HH:mm", Locale.getDefault()).format(baseDate)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -296,7 +293,7 @@ class VendaActivity : BaseActivity() {
         progress.setCancelable(false) // disable dismiss by tapping outside of the dialog
         progress.show()
 
-        doAsync {
+        Thread {
             val printer = (application as App).getPrinter()
             var connected = false;
             try { connected = printer.connect(true) } catch (e: Exception) { e.printStackTrace() }
@@ -384,7 +381,7 @@ class VendaActivity : BaseActivity() {
                     progress.dismiss()
                 }
             }
-        }
+        }.start()
     }
 
     fun verificarBoleto() {
@@ -394,7 +391,7 @@ class VendaActivity : BaseActivity() {
         progress.setCancelable(false) // disable dismiss by tapping outside of the dialog
         progress.show()
 
-        doAsync {
+        Thread {
             val printer = (application as App).getBoletoPrinter()
             var connected = false;
             try { connected = printer.connect(true) } catch (e: Exception) { e.printStackTrace() }
@@ -429,7 +426,7 @@ class VendaActivity : BaseActivity() {
                     progress.dismiss()
                 }
             }
-        }
+        }.start()
     }
 
     fun emitirBoleto(_v: NotaCobertura.Itinerario, callbackFinish: ((success: Boolean) -> (Unit))? = null) {
