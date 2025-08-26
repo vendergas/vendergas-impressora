@@ -101,11 +101,6 @@ class Printer {
          * let the caller decide which one to use.  The helper methods
          * below therefore no longer enforce name or MAC filters. */
 
-        // -1 = none
-        private int knownPrinter(ArrayList<String> strList) {
-                return strList.size() >= 2 ? 0 : -1;
-        }
-
         private boolean knownPrinter(String printerName, String macaddress) {
                 // Any printer is considered valid now
                 return true;
@@ -193,11 +188,14 @@ class Printer {
                 if (keepConnection == false) {
                         this.mobileprint = new EscPosPrinter();
                         this.mobileprint.LnitLib();
-                        ArrayList btList = getPairedDevices();
+                        ArrayList<String> btList = getPairedDevices();
 
-                        int printerMac = knownPrinter(btList);
-                        if (printerMac != -1) {
-                                if (mobileprint.ConnectDevice(btList, printerMac)) {
+                        // Try each paired device until a connection succeeds
+                        for (int i = 0; i < btList.size(); i += 2) {
+                                ArrayList<String> candidate = new ArrayList<>();
+                                candidate.add(btList.get(i));
+                                candidate.add(btList.get(i + 1));
+                                if (mobileprint.ConnectDevice(candidate, 0)) {
                                         connected = true;
                                         keepConnection = keepC;
                                         return true;

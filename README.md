@@ -6,6 +6,13 @@ Este projeto agora utiliza uma camada genérica de envio ESC/POS para se comunic
 
 O método `getPairedDevices()` expõe os dispositivos pareados no formato `[nome, mac]`, permitindo que o usuário escolha manualmente qual impressora utilizar.
 
+## Conexão automática
+
+Ao chamar `connect(boolean keepConnection)`, a biblioteca tentará se conectar
+sequencialmente a cada dispositivo pareado até que uma impressora ESC/POS
+responda, dispensando a necessidade de remover outros dispositivos Bluetooth
+como fones de ouvido.
+
 ## Compatibilidade e testes
 
 A nova camada foi validada com diferentes modelos de impressoras ESC/POS:
