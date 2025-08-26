@@ -9,8 +9,6 @@ import android.widget.Toast
 import com.google.gson.Gson
 import inputservice.printerLib.NfePrinterA7
 import org.apache.commons.io.IOUtils
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 import org.vudroid.core.DecodeServiceBase
 import org.vudroid.pdfdroid.codec.PdfContext
 import vendergas.impressora.R
@@ -22,7 +20,7 @@ import vendergas.impressora.models.enums.ItinerarioStatus
 import java.io.*
 import java.text.Normalizer
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
+import java.util.*
 
 class NotaFiscal {
 
@@ -337,9 +335,9 @@ class NotaFiscal {
 
                     if (it.emissaoNota != null) {
                         try {
-                            val baseDate = DateTime(it.emissaoNota)
-                            emissao_nota_data = DateTimeFormat.forPattern("dd/MM/yyyy").print(baseDate)
-                            emissao_nota_hora = DateTimeFormat.forPattern("HH:mm").print(baseDate)
+                            val baseDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).parse(it.emissaoNota)
+                            emissao_nota_data = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(baseDate)
+                            emissao_nota_hora = SimpleDateFormat("HH:mm", Locale.getDefault()).format(baseDate)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -452,9 +450,9 @@ class NotaFiscal {
 
             if (venda.emissaoNota != null) {
                 try {
-                    val baseDate = DateTime(venda.emissaoNota)
-                    emissao_nota_data = DateTimeFormat.forPattern("dd-MM-yyyy").print(baseDate)
-                    emissao_nota_hora = DateTimeFormat.forPattern("HH:mm").print(baseDate)
+                    val baseDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).parse(venda.emissaoNota)
+                    emissao_nota_data = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(baseDate)
+                    emissao_nota_hora = SimpleDateFormat("HH:mm", Locale.getDefault()).format(baseDate)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
