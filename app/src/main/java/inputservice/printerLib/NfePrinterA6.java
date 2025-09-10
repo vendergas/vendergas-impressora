@@ -1,6 +1,5 @@
 package inputservice.printerLib;
 
-import rego.PrintLib.mobilePrinter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,10 +95,10 @@ public class NfePrinterA6 extends Printer {
 	public static final String[] spaces = new String[]{""," ","  ","   ","    ","     ","      ","       ","        ","         ","          "};
 	public static final int[] sizeslastitem = new int[]{33,33,33,15,28,30};//for filltemplatediv
 	
-	public NfePrinterA6(mobilePrinter mp){
-		this.mobileprint = mp;
-		
-	}
+        public NfePrinterA6(EscPosPrinter mp){
+                this.mobileprint = mp;
+
+        }
 	
 	public static void main(String[] args){
 		
