@@ -12,7 +12,7 @@ class Cliente: CommonFields() {
     var nome: String? = null
 
     fun getClienteNome(): String {
-        return if (this.tipoCliente != "1" && this.razaoSocial != null) this.razaoSocial!! else this.nome!!
+        return if (this.tipoCliente != "1" && this.razaoSocial != null) this.razaoSocial!! else this.nome ?: "Cliente sem nome"
     }
 
     @Expose

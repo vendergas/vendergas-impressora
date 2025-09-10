@@ -59,7 +59,9 @@ class RequestHandler(private val view: BaseActivity? = null, private val authTok
 
     fun formatErrorResponse(e: Throwable?): ErrorResponse {
         try {
-            return Gson().fromJson<ErrorResponse>((e as HttpException).response().errorBody()!!.string(), ErrorResponse::class.java)
+            if (e is HttpException) {
+                return Gson().fromJson<ErrorResponse>(e.response().errorBody()!!.string(), ErrorResponse::class.java)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

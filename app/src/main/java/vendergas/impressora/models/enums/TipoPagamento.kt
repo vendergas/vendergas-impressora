@@ -22,6 +22,9 @@ enum class TipoPagamento(val value: String) {
     @SerializedName("cheque")
     CHEQUE( "cheque"),
 
+    @SerializedName("pix")
+    PIX( "pix"),
+
     @SerializedName("cartao_todos")
     CARTAO_TODOS( "cartao_todos"),
 
@@ -36,6 +39,7 @@ enum class TipoPagamento(val value: String) {
             DINHEIRO.value -> return "Dinheiro"
             VALE_GAS.value -> return "Vale-Gás"
             CHEQUE.value -> return "Cheque"
+            PIX.value -> return "PIX"
             CARTAO_TODOS.value -> return "Cartão de Débito/Cartão de Crédito"
             OUTROS.value -> return "Outros"
             else -> return "--"
