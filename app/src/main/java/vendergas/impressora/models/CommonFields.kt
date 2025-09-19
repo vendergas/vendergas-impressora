@@ -58,6 +58,14 @@ open class CommonFields {
         @Expose
         @SerializedName("telefone")
         var telefone: String? = null
+
+        @Expose
+        @SerializedName("nfceVendergas")
+        var nfceVendergas: Boolean? = null
+
+        @Expose
+        @SerializedName("jaEmitiuNfceVendergas")
+        var jaEmitiuNfceVendergas: Boolean? = null
     }
 
 }

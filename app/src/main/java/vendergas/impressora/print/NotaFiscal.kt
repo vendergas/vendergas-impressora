@@ -26,6 +26,27 @@ class NotaFiscal {
 
     companion object {
 
+        /**
+         * Verifica se deve usar o sistema interno (nfceVendergas) ou Tecnospeed
+         * baseado na lógica do backend
+         */
+        fun shouldUseInternalSystem(tipoNota: String?, estabelecimento: CommonFields.Estabelecimento?): Boolean {
+            if (tipoNota != "nfce" || estabelecimento == null) {
+                return false
+            }
+            
+            return (estabelecimento.nfceVendergas == true) || (estabelecimento.jaEmitiuNfceVendergas == true)
+        }
+
+        /**
+         * Verifica se deve usar o sistema interno considerando empresa ou loja
+         */
+        fun shouldUseInternalSystem(tipoNota: String?, empresa: CommonFields.Estabelecimento?, loja: CommonFields.Estabelecimento?): Boolean {
+            val estabelecimento = empresa ?: loja
+            return shouldUseInternalSystem(tipoNota, estabelecimento)
+        }
+
+
         fun formatEnderecoFirstLine(e: Endereco?): String {
             var endFormated: String? = ""
             if (e != null) {

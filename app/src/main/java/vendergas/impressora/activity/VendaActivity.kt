@@ -369,13 +369,16 @@ class VendaActivity : BaseActivity() {
                 runOnUiThread {
                     showConfirmDialog(
                         title = "Atenção!",
-                        message = "Não foi possível conectar a impressora, verifique se o pareamento está ativo e tente novamente, ou continue a VENDA.",
+                        message = "Não foi possível conectar a impressora. O que deseja fazer?",
                         negativeButton = "Cancelar",
                         callbackCancel = null,
                         confirmButton = "Tentar novamente",
                         callback = { emitirNota() },
-                        neutralButton = "Continuar",
-                        callbackNeutral = { emitirNota(true) }
+                        neutralButton = "Baixar/Compartilhar",
+                        callbackNeutral = { 
+                            // Primeiro emite a nota sem imprimir, depois baixa
+                            emitirNotaParaDownload()
+                        }
                     )
                     (application as App).disconnectPrinter()
                     progress.dismiss()
@@ -535,6 +538,184 @@ class VendaActivity : BaseActivity() {
             e.printStackTrace()
             requestHandler.logCrash(e)
         }
+    }
+
+    fun emitirNotaParaDownload() {
+        val progress = ProgressDialog(this@VendaActivity)
+        progress.setMessage("Emitindo nota...")
+        progress.setCancelable(false)
+        progress.show()
+
+        // Primeiro emite a nota (sem impressora)
+        if (venda?.cliente != null) {
+            if (cpf_input.isEnabled) venda!!.cliente!!.cpf = cpf_input.text.toString()
+            if (cnpj_input.isEnabled) venda!!.cliente!!.cnpj = cnpj_input.text.toString()
+        }
+
+        vendaRequest.observacao = observacoes_input.text.toString()
+        vendaRequest.itinerario = venda
+
+        if ((venda?.empresas ?: listOf()).size > 0) vendaRequest.empresa = venda?.empresas?.get(0)?._id
+        else if (venda?.empresa != null) vendaRequest.empresa = venda?.empresa?._id
+
+        if ((venda?.lojas ?: listOf()).size > 0) vendaRequest.loja = venda?.lojas?.get(0)?._id
+        else if (venda?.loja != null) vendaRequest.loja = venda?.loja?._id
+
+        requestHandler.sendRequest<NotaCobertura.Itinerario>(
+            requestHandler.ROTAS.iniciarVenda(paramDefault.idEntregador!!, vendaRequest),
+            { res ->
+                venda = res
+                progress.dismiss()
+                
+                if (venda?.status == ItinerarioStatus.VENDA_EMITIDA || venda?.status == ItinerarioStatus.VENDA_AUTORIZADA) {
+                    // Nota emitida com sucesso, agora oferece opções de download/compartilhamento
+                    showDownloadShareDialog()
+                } else {
+                    showError("Não foi possível emitir a nota fiscal")
+                }
+            },
+            {
+                progress.dismiss()
+                showError(it.message ?: Messages.defaultError, it.title ?: "Erro ao emitir nota")
+            }
+        )
+    }
+
+    fun showDownloadShareDialog() {
+        showConfirmDialog(
+            title = "Nota emitida com sucesso!",
+            message = "A nota foi emitida. Escolha uma opção:",
+            negativeButton = "Voltar ao menu",
+            callbackCancel = {
+                changeActivityAndRemoveParentActivity(MainActivity::class.java)
+            },
+            confirmButton = "Baixar PDF",
+            callback = { downloadNotaPDF() },
+            neutralButton = "Compartilhar",
+            callbackNeutral = { compartilharNota() }
+        )
+    }
+
+    fun downloadNotaPDF() {
+        if (venda?.chaveNota.isNullOrEmpty()) {
+            showError("Chave da nota não encontrada")
+            return
+        }
+
+        val progress = ProgressDialog(this@VendaActivity)
+        progress.setMessage("Baixando PDF...")
+        progress.setCancelable(false)
+        progress.show()
+
+        val idEmpresa = if ((venda?.empresas ?: listOf()).isNotEmpty()) venda?.empresas?.get(0)?._id else venda?.empresa?._id
+        val idLoja = if ((venda?.lojas ?: listOf()).isNotEmpty()) venda?.lojas?.get(0)?._id else venda?.loja?._id
+
+        requestHandler.sendRequest<okhttp3.ResponseBody>(
+            requestHandler.ROTAS.downloadNotaPDF(
+                paramDefault.idEntregador!!,
+                idEmpresa,
+                idLoja,
+                venda!!.chaveNota!!,
+                venda!!.tipoNota ?: "nfce"
+            ),
+            { responseBody ->
+                progress.dismiss()
+                salvarPDFNoDispositivo(responseBody)
+            },
+            {
+                progress.dismiss()
+                showError(it.message ?: "Erro ao baixar PDF", it.title ?: "Erro")
+            }
+        )
+    }
+
+    fun salvarPDFNoDispositivo(responseBody: okhttp3.ResponseBody) {
+        try {
+            val fileName = "nota_fiscal_${venda?.numeroNota ?: System.currentTimeMillis()}.pdf"
+            val file = java.io.File(getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS), fileName)
+            
+            val inputStream = responseBody.byteStream()
+            val outputStream = java.io.FileOutputStream(file)
+            
+            val buffer = ByteArray(4096)
+            var bytesRead: Int
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                outputStream.write(buffer, 0, bytesRead)
+            }
+            
+            outputStream.close()
+            inputStream.close()
+            
+            showConfirmDialog(
+                title = "PDF salvo!",
+                message = "O arquivo foi salvo em: ${file.absolutePath}",
+                negativeButton = "OK",
+                callbackCancel = {
+                    changeActivityAndRemoveParentActivity(MainActivity::class.java)
+                },
+                confirmButton = "Abrir",
+                callback = { abrirPDF(file) },
+                neutralButton = "Compartilhar",
+                callbackNeutral = { compartilharPDF(file) }
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showError("Erro ao salvar PDF: ${e.message}")
+        }
+    }
+
+    fun abrirPDF(file: java.io.File) {
+        try {
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+            intent.setDataAndType(uri, "application/pdf")
+            intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(intent)
+        } catch (e: Exception) {
+            showError("Nenhum aplicativo encontrado para abrir PDF")
+        }
+    }
+
+    fun compartilharPDF(file: java.io.File) {
+        try {
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+            val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND)
+            shareIntent.type = "application/pdf"
+            shareIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri)
+            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Nota Fiscal")
+            shareIntent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(android.content.Intent.createChooser(shareIntent, "Compartilhar PDF"))
+        } catch (e: Exception) {
+            showError("Erro ao compartilhar PDF: ${e.message}")
+        }
+    }
+
+    fun compartilharNota() {
+        if (venda?.chaveNota.isNullOrEmpty()) {
+            showError("Chave da nota não encontrada")
+            return
+        }
+
+        val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Nota Fiscal")
+        shareIntent.putExtra(
+            android.content.Intent.EXTRA_TEXT, 
+            "Nota Fiscal\n" +
+            "Número: ${venda?.numeroNota}\n" +
+            "Série: ${venda?.serieNota}\n" +
+            "Chave: ${venda?.chaveNota}\n" +
+            "Valor: R$ ${String.format("%.2f", venda?.valor ?: 0f)}"
+        )
+        startActivity(android.content.Intent.createChooser(shareIntent, "Compartilhar Nota"))
     }
 
 }
