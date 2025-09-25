@@ -587,6 +587,19 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
                     android:text="EMITIR BOLETO"/>
+            <Button android:id="@+id/baixar_boleto" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:drawableEnd="@drawable/ic_chrome_reader_mode_black_24dp"
+                    android:drawableStart="@drawable/ic_chrome_reader_mode_black_24dp"
+                    android:drawableTint="@color/white"
+                    android:padding="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="BAIXAR BOLETO"/>
 
         </LinearLayout>
 

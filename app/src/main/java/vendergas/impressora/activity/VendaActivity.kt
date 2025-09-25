@@ -1,8 +1,10 @@
 package vendergas.impressora.activity
 
 import android.app.DatePickerDialog
-import android.app.LauncherActivity
 import android.app.ProgressDialog
+import android.net.Uri
+import android.app.LauncherActivity
+import android.app.DownloadManager
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -29,6 +31,9 @@ import vendergas.impressora.models.enums.TipoPagamento
 import vendergas.impressora.print.NotaFiscal
 import java.text.SimpleDateFormat
 import java.util.*
+import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class VendaActivity : BaseActivity() {
@@ -257,12 +262,12 @@ class VendaActivity : BaseActivity() {
         title_boleto?.visibility = if (venda?.pagamento == TipoPagamento.BOLETO) View.VISIBLE else View.GONE;
         boleto_inputs?.visibility = if (venda?.pagamento == TipoPagamento.BOLETO) View.VISIBLE else View.GONE;
 
-        if (venda?.pedido == null || venda?.pagamento != TipoPagamento.BOLETO) {
-            emitir_boleto?.visibility = View.GONE
-        } else {
-            emitir_boleto?.visibility = View.VISIBLE
-            emitir_boleto?.setOnClickListener { verificarBoleto() }
-        }
+        val podeBoleto = venda?.pagamento == TipoPagamento.BOLETO
+        emitir_boleto?.visibility = if (podeBoleto) View.VISIBLE else View.GONE
+        if (podeBoleto) emitir_boleto?.setOnClickListener { verificarBoleto() }
+
+        baixar_boleto?.visibility = if (podeBoleto) View.VISIBLE else View.GONE
+        if (podeBoleto) baixar_boleto?.setOnClickListener { baixarBoletoExistenteOuEmitir() }
 
         emitir_nota?.visibility = View.VISIBLE;
         emitir_nota?.setOnClickListener { emitirNota() }
@@ -294,11 +299,12 @@ class VendaActivity : BaseActivity() {
         progress.show()
 
         Thread {
+            val ignorar = App.IGNORAR_CONEXAO_IMPRESSORA
             val printer = (application as App).getPrinter()
             var connected = false;
-            try { connected = printer.connect(true) } catch (e: Exception) { e.printStackTrace() }
+            try { connected = if (ignorar) true else printer.connect(true) } catch (e: Exception) { e.printStackTrace() }
 
-            if (connected || ignorePrint) {
+            if (connected || ignorePrint || ignorar) {
                 if (venda?.cliente != null) {
                     if (cpf_input.isEnabled) venda!!.cliente!!.cpf = cpf_input.text.toString();
                     if (cnpj_input.isEnabled) venda!!.cliente!!.cnpj = cnpj_input.text.toString();
@@ -323,7 +329,7 @@ class VendaActivity : BaseActivity() {
 
                         if (venda?.status == ItinerarioStatus.VENDA_EMITIDA || venda?.status == ItinerarioStatus.VENDA_AUTORIZADA) {
                             notaSucesso = true;
-                            NotaFiscal.genNotaByClassA7(printer, venda!!, cobertura);
+                            if (!ignorar) NotaFiscal.genNotaByClassA7(printer, venda!!, cobertura);
                         }
 
                         progress.dismiss()
@@ -345,7 +351,7 @@ class VendaActivity : BaseActivity() {
                                     }, 50)
                                 },
                                 confirmButton = "Emitir boleto",
-                                callback = { verificarBoleto() },
+                                callback = { if (ignorar) emitirBoletoParaDownload() else verificarBoleto() },
                                 neutralButton = null,
                                 callbackNeutral = null
                             )
@@ -392,9 +398,10 @@ class VendaActivity : BaseActivity() {
         progress.show()
 
         Thread {
+            val ignorar = App.IGNORAR_CONEXAO_IMPRESSORA
             val printer = (application as App).getBoletoPrinter()
             var connected = false;
-            try { connected = printer.connect(true) } catch (e: Exception) { e.printStackTrace() }
+            try { connected = if (ignorar) true else printer.connect(true) } catch (e: Exception) { e.printStackTrace() }
 
             if (connected) {
                 emitirBoleto(venda!!) {
@@ -414,13 +421,13 @@ class VendaActivity : BaseActivity() {
                 runOnUiThread {
                     showConfirmDialog(
                         title = "Atenção!",
-                        message = "Não foi possível conectar a impressora, verifique se o pareamento está ativo e tente novamente.",
+                        message = "Não foi possível conectar a impressora. O que deseja fazer?",
                         negativeButton = "Cancelar",
                         callbackCancel = null,
                         confirmButton = "Tentar novamente",
                         callback = { verificarBoleto() },
-                        neutralButton = null,
-                        callbackNeutral = null
+                        neutralButton = "Emitir/baixar",
+                        callbackNeutral = { emitirBoletoParaDownload() }
                     )
                     (application as App).disconnectBoletoPrinter()
                     progress.dismiss()
@@ -435,7 +442,10 @@ class VendaActivity : BaseActivity() {
         if (cpf_input.isEnabled) cpf_cnpj = cpf_input.text.toString();
         else if (cnpj_input.isEnabled) cpf_cnpj = cnpj_input.text.toString();
 
-        val numeroBoleto = "${_v.numeroNota ?: ""}-${_v.serieNota ?: ""}";
+        val numeroBoleto = when {
+            !_v.numeroNota.isNullOrBlank() && !_v.serieNota.isNullOrBlank() -> "${_v.numeroNota}-${_v.serieNota}"
+            else -> null // Se não houver NF, deixa null para evitar erro de limite de caracteres
+        }
 
         requestHandler.sendRequest<BoletoResponse>(
             requestHandler.ROTAS.iniciarBoleto(
@@ -462,10 +472,16 @@ class VendaActivity : BaseActivity() {
                             imprimirBoleto(res)
                             if (callbackFinish != null) callbackFinish(true);
                         },
-                        neutralButton = null,
-                        callbackNeutral = null
+                        neutralButton = if (!res.linkBoleto.isNullOrBlank()) "Baixar" else null,
+                        callbackNeutral = {
+                            if (!res.linkBoleto.isNullOrBlank()) {
+                                baixarArquivoBoleto(res.linkBoleto!!, res.nomeBoleto ?: "boleto.pdf")
+                                if (callbackFinish != null) callbackFinish(true)
+                            }
+                        }
                     )
                 } else {
+                    // Boleto recém emitido. Se impressora foi conectada, imprime; caso contrário, deixa para outros fluxos.
                     imprimirBoleto(res)
                     if (callbackFinish != null) callbackFinish(true);
                 }
@@ -475,6 +491,198 @@ class VendaActivity : BaseActivity() {
                 showError(it.message ?: "", it.title)
             }
         )
+    }
+
+    fun emitirBoletoParaDownload() {
+        val progress = ProgressDialog(this@VendaActivity)
+        progress.setMessage("Emitindo boleto...")
+        progress.setCancelable(false)
+        progress.show()
+
+        var cpf_cnpj: String? = null
+        if (cpf_input.isEnabled) cpf_cnpj = cpf_input.text.toString()
+        else if (cnpj_input.isEnabled) cpf_cnpj = cnpj_input.text.toString()
+
+        val v = venda ?: run {
+            progress.dismiss()
+            showError("Venda não carregada")
+            return
+        }
+
+        val numeroBoleto = when {
+            !v.numeroNota.isNullOrBlank() && !v.serieNota.isNullOrBlank() -> "${v.numeroNota}-${v.serieNota}"
+            else -> null // Se não houver NF, deixa null para evitar erro de limite de caracteres
+        }
+
+        requestHandler.sendRequest<BoletoResponse>(
+            requestHandler.ROTAS.iniciarBoleto(
+                paramDefault.idEntregador!!,
+                v.pedido,
+                v.cliente?._id,
+                cpf_cnpj,
+                v.cliente?.getClienteNome(),
+                boletoVencimento,
+                v.idCobertura,
+                numeroBoleto
+            ),
+            { res ->
+                progress.dismiss()
+                val link = res.linkBoleto
+                if (!link.isNullOrBlank()) {
+                    baixarArquivoBoleto(link, res.nomeBoleto ?: "boleto_${System.currentTimeMillis()}.pdf")
+                } else {
+                    showError("Link do boleto não disponível")
+                }
+            },
+            {
+                progress.dismiss()
+                showError(it.message ?: Messages.defaultError, it.title ?: "Erro ao emitir boleto")
+            }
+        )
+    }
+
+    fun baixarBoletoExistenteOuEmitir() {
+        val progress = ProgressDialog(this@VendaActivity)
+        progress.setMessage("Verificando boleto...")
+        progress.setCancelable(false)
+        progress.show()
+
+        val v = venda ?: run {
+            progress.dismiss()
+            showError("Venda não carregada")
+            return
+        }
+
+        requestHandler.sendRequest<BoletoResponse>(
+            requestHandler.ROTAS.consultarBoleto(
+                paramDefault.idEntregador!!,
+                v.pedido
+            ),
+            { res ->
+                progress.dismiss()
+                Log.d("DEBUG_BOLETO", "Resposta da API: jaEmitido=${res.jaEmitido}, linkBoleto=${res.linkBoleto}")
+                
+                if (res.jaEmitido == true && !res.linkBoleto.isNullOrBlank()) {
+                    Log.d("DEBUG_BOLETO", "Boleto já emitido com link disponível")
+                    showConfirmDialog(
+                        title = "Boleto já emitido",
+                        message = "Este boleto já foi emitido. O que deseja fazer?",
+                        negativeButton = "Cancelar",
+                        callbackCancel = null,
+                        confirmButton = "Baixar PDF",
+                        callback = { 
+                            Log.d("DEBUG_BOLETO", "Usuário escolheu baixar PDF")
+                            baixarArquivoBoleto(res.linkBoleto!!, res.nomeBoleto ?: "boleto_${System.currentTimeMillis()}.pdf") 
+                        },
+                        neutralButton = "Imprimir",
+                        callbackNeutral = { 
+                            Log.d("DEBUG_BOLETO", "Usuário escolheu imprimir")
+                            if (App.IGNORAR_CONEXAO_IMPRESSORA) {
+                                showError("Modo de teste ativo - impressão desabilitada")
+                            } else {
+                                imprimirBoleto(res)
+                            }
+                        }
+                    )
+                } else if (res.jaEmitido == true) {
+                    Log.d("DEBUG_BOLETO", "Boleto já emitido mas sem link")
+                    showError("Boleto já emitido, mas link indisponível.")
+                } else {
+                    Log.d("DEBUG_BOLETO", "Boleto não encontrado")
+                    showConfirmDialog(
+                        title = "Boleto não encontrado",
+                        message = "Deseja emitir o boleto agora (sem nota fiscal)?",
+                        negativeButton = "Cancelar",
+                        callbackCancel = null,
+                        confirmButton = "Emitir/baixar",
+                        callback = { emitirBoletoParaDownload() },
+                        neutralButton = null,
+                        callbackNeutral = null
+                    )
+                }
+            },
+            {
+                progress.dismiss()
+                showError(it.message ?: Messages.defaultError, it.title ?: "Erro ao consultar boleto")
+            }
+        )
+    }
+
+    fun baixarArquivoBoleto(link: String, nomeArquivo: String) {
+        val progress = ProgressDialog(this@VendaActivity)
+        progress.setMessage("Baixando boleto...")
+        progress.setCancelable(false)
+        progress.show()
+
+        Thread {
+            try {
+                val url = URL(link)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.setRequestProperty("Accept", "application/pdf")
+                connection.connect()
+                
+                Log.d("DEBUG_BOLETO", "Content-Type: ${connection.contentType}")
+                Log.d("DEBUG_BOLETO", "Content-Length: ${connection.contentLength}")
+                
+                if (connection.responseCode in 200..299) {
+                    val contentType = connection.contentType?.toLowerCase()
+                    
+                    // Verifica se realmente é um PDF
+                    if (contentType?.contains("pdf") == true || contentType?.contains("application/octet-stream") == true) {
+                        // Força extensão .pdf independente do nome original
+                        val fileName = if (nomeArquivo.trim().isNotEmpty()) {
+                            if (nomeArquivo.endsWith(".pdf")) nomeArquivo else "${nomeArquivo}.pdf"
+                        } else {
+                            "boleto_${System.currentTimeMillis()}.pdf"
+                        }
+                        
+                        val file = File(getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS), fileName)
+                        val inputStream = connection.inputStream
+                        val outputStream = java.io.FileOutputStream(file)
+                        val buffer = ByteArray(4096)
+                        var bytesRead: Int
+                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            outputStream.write(buffer, 0, bytesRead)
+                        }
+                        outputStream.close()
+                        inputStream.close()
+
+                        runOnUiThread {
+                            progress.dismiss()
+                            showConfirmDialog(
+                                title = "Boleto salvo!",
+                                message = "Arquivo salvo em: ${file.absolutePath}",
+                                negativeButton = "OK",
+                                callbackCancel = null,
+                                confirmButton = "Abrir",
+                                callback = { abrirPDF(file) },
+                                neutralButton = "Compartilhar",
+                                callbackNeutral = { compartilharPDF(file) }
+                            )
+                        }
+                    } else {
+                        // Se não for PDF, mostra erro específico
+                        runOnUiThread {
+                            progress.dismiss()
+                            showError("Link do boleto não está disponível ou expirou. Content-Type: $contentType")
+                        }
+                    }
+                } else {
+                    runOnUiThread {
+                        progress.dismiss()
+                        showError("Falha ao baixar boleto (HTTP ${connection.responseCode})")
+                    }
+                }
+                connection.disconnect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread {
+                    progress.dismiss()
+                    showError("Erro ao baixar boleto: ${e.message}")
+                }
+            }
+        }.start()
     }
 
     fun imprimirBoleto(_b: BoletoResponse) {

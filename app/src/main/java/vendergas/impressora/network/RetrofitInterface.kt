@@ -58,6 +58,21 @@ interface RetrofitInterface {
         @Query("numeroDocumento") numeroDocumento: String?
     ): Observable<BoletoResponse>
 
+    @GET("/boleto/consultar_boleto/entregador/{idEntregador}")
+    fun consultarBoleto(
+        @Path("idEntregador") _idEntregador: String,
+        @Query("idPedido") pedido: String?
+    ): Observable<BoletoResponse>
+
+    @GET("/notaFiscal/download/pdf/{idUsuario}")
+    fun downloadNotaPDF(
+        @Path("idUsuario") idUsuario: String,
+        @Query("idEmpresa") idEmpresa: String?,
+        @Query("idLoja") idLoja: String?,
+        @Query("chaveNota") chaveNota: String,
+        @Query("tipoNota") tipoNota: String
+    ): Observable<ResponseBody>
+
     /*
     @PUT("/pedidos/entregadores/{deliverymanId}/{orderId}/{latitude}/{longitude}/{radius}")
     fun refuseOrder(
