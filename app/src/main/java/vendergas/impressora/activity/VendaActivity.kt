@@ -1,10 +1,8 @@
 package vendergas.impressora.activity
 
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
-import android.net.Uri
 import android.app.LauncherActivity
-import android.app.DownloadManager
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -472,16 +470,10 @@ class VendaActivity : BaseActivity() {
                             imprimirBoleto(res)
                             if (callbackFinish != null) callbackFinish(true);
                         },
-                        neutralButton = if (!res.linkBoleto.isNullOrBlank()) "Baixar" else null,
-                        callbackNeutral = {
-                            if (!res.linkBoleto.isNullOrBlank()) {
-                                baixarArquivoBoleto(res.linkBoleto!!, res.nomeBoleto ?: "boleto.pdf")
-                                if (callbackFinish != null) callbackFinish(true)
-                            }
-                        }
+                        neutralButton = null,
+                        callbackNeutral = null
                     )
                 } else {
-                    // Boleto recém emitido. Se impressora foi conectada, imprime; caso contrário, deixa para outros fluxos.
                     imprimirBoleto(res)
                     if (callbackFinish != null) callbackFinish(true);
                 }
@@ -742,6 +734,40 @@ class VendaActivity : BaseActivity() {
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             requestHandler.logCrash(e)
+        }
+    }
+
+    fun abrirPDF(file: java.io.File) {
+        try {
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+            intent.setDataAndType(uri, "application/pdf")
+            intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(intent)
+        } catch (e: Exception) {
+            showError("Nenhum aplicativo encontrado para abrir PDF")
+        }
+    }
+
+    private fun compartilharPDF(file: java.io.File) {
+        try {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "application/pdf"
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(Intent.createChooser(intent, "Compartilhar PDF"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showError("Não foi possível compartilhar o PDF")
         }
     }
 
