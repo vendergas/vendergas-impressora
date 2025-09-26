@@ -10,7 +10,7 @@ class App: MultiDexApplication() {
 
     companion object {
         // Defina como true para ignorar conexão com impressoras durante testes
-        @JvmStatic var IGNORAR_CONEXAO_IMPRESSORA: Boolean = true
+        @JvmStatic var IGNORAR_CONEXAO_IMPRESSORA: Boolean = false
     }
 
     private var nfePrinterA7: NfePrinterA7? = null
