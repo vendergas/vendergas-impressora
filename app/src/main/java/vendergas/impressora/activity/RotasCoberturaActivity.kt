@@ -26,7 +26,7 @@ import kotlin.concurrent.schedule
 
 class RotasCoberturaActivity : BaseActivity() {
 
-    private var FORMA_PAGAMENTO_ITENS = arrayOf("Boleto", "Cartão de Débito", "Cartão de Crédito", "Dinheiro", "Vale-Gás", "Cheque");
+    private var FORMA_PAGAMENTO_ITENS = arrayOf("Boleto", "Cartão de Débito", "Cartão de Crédito", "Dinheiro", "Vale-Gás", "Cheque", "PIX");
 
     private var cobertura: NotaCobertura? = null
     private var itinerarioSelecionado: NotaCobertura.Itinerario? = null
@@ -286,6 +286,7 @@ class RotasCoberturaActivity : BaseActivity() {
                                 "Dinheiro" -> itinerarioSelecionado?.pagamento = TipoPagamento.DINHEIRO
                                 "Vale-Gás" -> itinerarioSelecionado?.pagamento = TipoPagamento.VALE_GAS
                                 "Cheque" -> itinerarioSelecionado?.pagamento = TipoPagamento.CHEQUE
+                                "PIX" -> itinerarioSelecionado?.pagamento = TipoPagamento.PIX
                             }
                         }
                     }
@@ -302,6 +303,7 @@ class RotasCoberturaActivity : BaseActivity() {
                         TipoPagamento.DINHEIRO -> index = FORMA_PAGAMENTO_ITENS.indexOf("Dinheiro")
                         TipoPagamento.VALE_GAS -> index = FORMA_PAGAMENTO_ITENS.indexOf("Vale-Gás")
                         TipoPagamento.CHEQUE -> index = FORMA_PAGAMENTO_ITENS.indexOf("Cheque")
+                        TipoPagamento.PIX -> index = FORMA_PAGAMENTO_ITENS.indexOf("PIX")
                     }
                     forma_pagamento?.setSelection(if (index >= 0) index else 0)
                 }
@@ -445,16 +447,17 @@ class RotasCoberturaActivity : BaseActivity() {
                         paramDefault.idEntregador!!,
                         searchString = search,
                         multiEmpresa = if (cobertura?.empresas != null && cobertura?.empresas?.size!! > 0) cobertura?.empresas?.joinToString { "${it._id}" } else null,
-                        multiLoja = if (cobertura?.lojas != null && cobertura?.lojas?.size!! > 0) cobertura?.lojas?.joinToString { "${it._id}" } else null
+                        multiLoja = if (cobertura?.lojas != null && cobertura?.lojas?.size!! > 0) cobertura?.lojas?.joinToString { "${it._id}" } else null,
+                        perPage = 99999
                     ),
                     { res ->
                         autocomplete_destinatario?.isEnabled = true
                         loading_cliente_list?.visibility = View.GONE
 
-                        clientes_list = res.items ?: listOf()
+                        clientes_list = (res.items ?: listOf()).filter { it.tipoCliente != "1" }
 
                         val resultMapped = ArrayList<String>()
-                        (res.items ?: listOf()).forEach { resultMapped.add("${it.getClienteNome()} - ${it.telefone}") }
+                        clientes_list.forEach { resultMapped.add("${it.getClienteNome()} - ${it.telefone}") }
 
                         setupClientesAdapter(resultMapped.toTypedArray())
                         if (showDropDown) {

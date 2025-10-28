@@ -373,13 +373,16 @@ class VendaActivity : BaseActivity() {
                 runOnUiThread {
                     showConfirmDialog(
                         title = "Atenção!",
-                        message = "Não foi possível conectar a impressora, verifique se o pareamento está ativo e tente novamente, ou continue a VENDA.",
+                        message = "Não foi possível conectar a impressora. O que deseja fazer?",
                         negativeButton = "Cancelar",
                         callbackCancel = null,
                         confirmButton = "Tentar novamente",
                         callback = { emitirNota() },
-                        neutralButton = "Continuar",
-                        callbackNeutral = { emitirNota(true) }
+                        neutralButton = "Baixar/Compartilhar",
+                        callbackNeutral = { 
+                            // Primeiro emite a nota sem imprimir, depois baixa
+                            emitirNotaParaDownload()
+                        }
                     )
                     (application as App).disconnectPrinter()
                     progress.dismiss()
