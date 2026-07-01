@@ -4,7 +4,6 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_minhas_coberturas.*
 import vendergas.impressora.R
 import vendergas.impressora.adapter.NotaCoberturaAdapter
 import vendergas.impressora.base.BaseActivity
@@ -74,8 +73,8 @@ class MinhasCoberturasActivity : BaseActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true

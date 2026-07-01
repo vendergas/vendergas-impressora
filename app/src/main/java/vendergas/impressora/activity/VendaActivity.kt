@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import inputservice.printerLib.BoletoUtils
-import kotlinx.android.synthetic.main.activity_venda.*
 import vendergas.impressora.App
 import vendergas.impressora.R
 import vendergas.impressora.base.BaseActivity
@@ -62,7 +61,7 @@ class VendaActivity : BaseActivity() {
             e.printStackTrace()
         }
 
-        Log.d("DEBUG-TESTE", intent?.extras?.getString("venda"));
+        Log.d("DEBUG-TESTE", intent?.extras?.getString("venda") ?: "");
 
         if (venda == null) {
             showConfirmDialog(
@@ -77,8 +76,8 @@ class VendaActivity : BaseActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true
@@ -391,6 +390,8 @@ class VendaActivity : BaseActivity() {
         }.start()
     }
 
+    fun emitirNotaParaDownload() = emitirNota(ignorePrint = true)
+
     fun verificarBoleto() {
         val progress = ProgressDialog(this@VendaActivity)
 
@@ -621,7 +622,7 @@ class VendaActivity : BaseActivity() {
                 Log.d("DEBUG_BOLETO", "Content-Length: ${connection.contentLength}")
                 
                 if (connection.responseCode in 200..299) {
-                    val contentType = connection.contentType?.toLowerCase()
+                    val contentType = connection.contentType?.lowercase()
                     
                     // Verifica se realmente é um PDF
                     if (contentType?.contains("pdf") == true || contentType?.contains("application/octet-stream") == true) {

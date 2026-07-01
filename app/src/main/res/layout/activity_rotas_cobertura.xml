@@ -168,7 +168,7 @@
                         android:elevation="2dp"
                         android:outlineProvider="background">
 
-            <TextView android:id="@+id/title-venda-dest"
+            <TextView android:id="@+id/title_venda_dest"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/white"
@@ -183,7 +183,7 @@
                       android:textSize="20dp"
                       android:text="DESTINATÁRIO"/>
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView android:layout_below="@id/title-venda-dest"
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView android:layout_below="@id/title_venda_dest"
                                                                      android:id="@+id/autocomplete_destinatario"
                                                                      android:layout_width="match_parent"
                                                                      android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
                                                                      android:layout_marginEnd="10dp"/>
 
             <TextView android:layout_below="@id/autocomplete_destinatario"
-                      android:id="@+id/input-cliente-info"
+                      android:id="@+id/input_cliente_info"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/darkGrey"
@@ -205,7 +205,7 @@
                       android:text="Buscar pelo nome, telefone ou código."/>
 
             <ProgressBar android:id="@+id/loading_cliente_list"
-                         android:layout_below="@id/input-cliente-info"
+                         android:layout_below="@id/input_cliente_info"
                          android:layout_width="match_parent"
                          android:layout_height="40dp"
                          android:layout_gravity="center"
@@ -216,7 +216,7 @@
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:layout_below="@id/loading_cliente_list"
-                          android:id="@+id/dest-selecionado"
+                          android:id="@+id/dest_selecionado"
                           android:background="@color/white"
                           android:layout_marginTop="10dp"
                           android:paddingTop="10dp"
@@ -248,8 +248,8 @@
             </LinearLayout>
 
 
-            <TextView android:id="@+id/title-pagamento"
-                      android:layout_below="@id/dest-selecionado"
+            <TextView android:id="@+id/title_pagamento"
+                      android:layout_below="@id/dest_selecionado"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/white"
@@ -264,11 +264,11 @@
                       android:textSize="20dp"
                       android:text="Forma de Pagamento"/>
 
-            <LinearLayout android:id="@+id/opcoes-pagamento"
+            <LinearLayout android:id="@+id/opcoes_pagamento"
                           android:layout_width="match_parent"
                           android:layout_margin="10dp"
                           android:layout_height="wrap_content"
-                          android:layout_below="@id/title-pagamento"
+                          android:layout_below="@id/title_pagamento"
                           android:orientation="vertical">
 
                 <TextView android:layout_width="match_parent"
@@ -286,8 +286,8 @@
 
             </LinearLayout>
 
-            <TextView android:id="@+id/title-produtos"
-                      android:layout_below="@id/opcoes-pagamento"
+            <TextView android:id="@+id/title_produtos"
+                      android:layout_below="@id/opcoes_pagamento"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/white"
@@ -303,7 +303,7 @@
                       android:text="Produtos"/>
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView android:id="@+id/autocomplete_produto"
-                                                                     android:layout_below="@id/title-produtos"
+                                                                     android:layout_below="@id/title_produtos"
                                                                      android:layout_width="match_parent"
                                                                      android:layout_height="wrap_content"
                                                                      android:layout_marginStart="10dp"
@@ -312,7 +312,7 @@
                                                                      android:layout_marginEnd="10dp"/>
 
             <TextView android:layout_below="@id/autocomplete_produto"
-                      android:id="@+id/input-produtos-info"
+                      android:id="@+id/input_produtos_info"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/darkGrey"
@@ -324,7 +324,7 @@
                       android:text="Buscar pelo código, nome, etc."/>
 
             <ProgressBar android:id="@+id/loading_produtos_list"
-                         android:layout_below="@id/input-produtos-info"
+                         android:layout_below="@id/input_produtos_info"
                          android:layout_width="match_parent"
                          android:layout_height="40dp"
                          android:layout_centerHorizontal="true"

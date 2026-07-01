@@ -7,11 +7,10 @@ import com.google.android.material.snackbar.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import com.google.gson.Gson
 import inputservice.printerLib.BoletoUtils
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import vendergas.impressora.App
 import vendergas.impressora.R
 import vendergas.impressora.base.BaseActivity
@@ -34,7 +33,7 @@ class MainActivity : BaseActivity() {
 
         fab.setOnClickListener { view -> teste(view) }
 
-        imprimir.setOnClickListener { imprimir() }
+        findViewById<Button>(R.id.imprimir).setOnClickListener { imprimir() }
 
         minhas_coberturas.setOnClickListener {
             val mBundle = Bundle()

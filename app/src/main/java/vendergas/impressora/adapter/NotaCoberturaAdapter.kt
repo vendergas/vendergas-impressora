@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.database.DataSetObserver
 import android.view.View
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.cobertura_item.view.*
 import vendergas.impressora.R
 import vendergas.impressora.models.NotaCobertura
 

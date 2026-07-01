@@ -45,7 +45,7 @@ class Bluetooth(var ctx: Context) {
 
         if (BluetoothDevice.ACTION_FOUND == action) {
             val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-            Log.i("Bluetooth", "found device: " + device.name)
+            Log.i("Bluetooth", "found device: " + device?.name)
         } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) {
             Log.d("Bluetooth", "discovery complete")
         }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_rotas_cobertura.*
 import vendergas.impressora.R
 import vendergas.impressora.adapter.ItinerarioAdapter
 import vendergas.impressora.base.BaseActivity
@@ -104,8 +103,8 @@ class RotasCoberturaActivity : BaseActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 if (nova_venda_popup?.visibility == View.VISIBLE) toggleNovaVenda(show = false)
                 else finish()
@@ -223,7 +222,7 @@ class RotasCoberturaActivity : BaseActivity() {
         setupInputProdutoAdapter()
     }
 
-    fun formatarNomeProduto(p: NotaCobertura.Itinerario.Produto): String =  "${if (p.codigo != null) "${p.codigo} | " else ""}${p.tipoEstoque?.getFormatedValue()?.toUpperCase()} - ${p.nome}"
+    fun formatarNomeProduto(p: NotaCobertura.Itinerario.Produto): String =  "${if (p.codigo != null) "${p.codigo} | " else ""}${p.tipoEstoque?.getFormatedValue()?.uppercase()} - ${p.nome}"
 
     fun setupClientesAdapter(list: Array<String>, requestFocus: Boolean = true) {
         filtered_cliente_List = list
@@ -304,6 +303,7 @@ class RotasCoberturaActivity : BaseActivity() {
                         TipoPagamento.VALE_GAS -> index = FORMA_PAGAMENTO_ITENS.indexOf("Vale-Gás")
                         TipoPagamento.CHEQUE -> index = FORMA_PAGAMENTO_ITENS.indexOf("Cheque")
                         TipoPagamento.PIX -> index = FORMA_PAGAMENTO_ITENS.indexOf("PIX")
+                        else -> index = 0
                     }
                     forma_pagamento?.setSelection(if (index >= 0) index else 0)
                 }

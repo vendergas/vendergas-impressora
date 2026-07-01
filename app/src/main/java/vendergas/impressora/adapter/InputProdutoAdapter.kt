@@ -9,7 +9,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.input_produto_item.view.*
 import vendergas.impressora.R
 import vendergas.impressora.base.BaseActivity
 import vendergas.impressora.models.NotaCobertura
@@ -41,7 +40,7 @@ class InputProdutoAdapter(
             val produto = listProdutos.get(position)
             val newView = LayoutInflater.from(context).inflate(R.layout.input_produto_item, null);
 
-            newView.nome_produto.text = "${if (produto.codigo != null) "${produto.codigo} | " else ""}${produto.tipoEstoque?.getFormatedValue()?.toUpperCase()} - ${produto.nome}"
+            newView.nome_produto.text = "${if (produto.codigo != null) "${produto.codigo} | " else ""}${produto.tipoEstoque?.getFormatedValue()?.uppercase()} - ${produto.nome}"
 
             newView.quantidade_input.setText("${produto.quantidade}")
             newView.valor_input.setText("${produto.valorUnitario}")

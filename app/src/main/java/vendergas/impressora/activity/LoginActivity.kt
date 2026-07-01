@@ -1,7 +1,6 @@
 package vendergas.impressora.activity
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_login.*
 import vendergas.impressora.R
 import vendergas.impressora.base.BaseActivity
 import vendergas.impressora.base.SharedPreference

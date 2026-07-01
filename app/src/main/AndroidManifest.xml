@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="vendergas.impressora">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
@@ -21,7 +22,10 @@
         <activity android:name=".activity.RotasCoberturaActivity"/>
         <activity android:name=".activity.MinhasCoberturasActivity"/>
         <activity android:name=".activity.LoginActivity" android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.LauncherScreenActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".activity.LauncherScreenActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -40,6 +44,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <provider
+            android:name="com.crashlytics.android.CrashlyticsInitProvider"
+            tools:node="remove" />
 
     </application>
 
